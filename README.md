@@ -29,7 +29,7 @@ print('load customed plugin')
 TRT_LOGGER = trt.Logger(trt.Logger.INFO)
 trt.init_libnvinfer_plugins(TRT_LOGGER, "")
 plg_registry = trt.get_plugin_registry()
-plg_creator = plg_registry.get_plugin_creator("FlattenConcatCustom", "1", "")
+plg_creator = plg_registry.get_plugin_creator("FlattenConcatCustom", "1", "") #to call the constructor@https://github.com/YirongMao/TensorRT-Custom-Plugin/blob/master/flattenConcatCustom.cpp#L36
 print(plg_creator)
 
 axis_pf = trt.PluginField("axis", np.array([1], np.int32), trt.PluginFieldType.INT32)
@@ -38,6 +38,12 @@ batch_pf = trt.PluginField("ignoreBatch", np.array([0], np.int32), trt.PluginFie
 pfc = trt.PluginFieldCollection([axis_pf, batch_pf])
 fn = plg_creator.create_plugin("FlattenConcatCustom1", pfc)
 print(fn)
+
+network = builder.create_network()
+input_1 = network.add_input(name="input_1", dtype=trt.float32, shape=(4, 2, 2))
+input_2 = network.add_input(name="input_2", dtype=trt.float32, shape=(2, 2, 2))
+inputs = [input_1, input_2]
+emb_layer = network.add_plugin_v2(inputs, fn) # to call configurePlugin@https://github.com/YirongMao/TensorRT-Custom-Plugin/blob/master/flattenConcatCustom.cpp#L258
 ```
 
 ## Load network in c++
