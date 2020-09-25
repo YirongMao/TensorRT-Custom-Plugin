@@ -18,8 +18,9 @@ We use file [CMakeLists.txt](https://github.com/YirongMao/TensorRT-Custom-Plugin
 ## Build network and serialize engine in python
 Please follow [builder.py](https://github.com/YirongMao/TensorRT-Custom-Plugin/blob/master/builder.py).
 
-You should configure the path to libnvinfer_plugin.so
+
 ```python
+# You should configure the path to libnvinfer_plugin.so
 nvinfer = ctypes.CDLL("/path-to-tensorrt/TensorRT-6.0.1.5/lib/libnvinfer_plugin.so", mode=ctypes.RTLD_GLOBAL)
 print('load nvinfer')
 pg = ctypes.CDLL("./libflatten_concat.so", mode=ctypes.RTLD_GLOBAL)
@@ -29,7 +30,8 @@ print('load customed plugin')
 TRT_LOGGER = trt.Logger(trt.Logger.INFO)
 trt.init_libnvinfer_plugins(TRT_LOGGER, "")
 plg_registry = trt.get_plugin_registry()
-plg_creator = plg_registry.get_plugin_creator("FlattenConcatCustom", "1", "") #to call the constructor@https://github.com/YirongMao/TensorRT-Custom-Plugin/blob/master/flattenConcatCustom.cpp#L36
+# to call the constructor@https://github.com/YirongMao/TensorRT-Custom-Plugin/blob/master/flattenConcatCustom.cpp#L36
+plg_creator = plg_registry.get_plugin_creator("FlattenConcatCustom", "1", "") 
 print(plg_creator)
 
 axis_pf = trt.PluginField("axis", np.array([1], np.int32), trt.PluginFieldType.INT32)
@@ -43,7 +45,8 @@ network = builder.create_network()
 input_1 = network.add_input(name="input_1", dtype=trt.float32, shape=(4, 2, 2))
 input_2 = network.add_input(name="input_2", dtype=trt.float32, shape=(2, 2, 2))
 inputs = [input_1, input_2]
-emb_layer = network.add_plugin_v2(inputs, fn) # to call configurePlugin@https://github.com/YirongMao/TensorRT-Custom-Plugin/blob/master/flattenConcatCustom.cpp#L258
+# to call configurePlugin@https://github.com/YirongMao/TensorRT-Custom-Plugin/blob/master/flattenConcatCustom.cpp#L258
+emb_layer = network.add_plugin_v2(inputs, fn) 
 ```
 
 ## Load network in c++
