@@ -3,7 +3,7 @@ import ctypes
 import numpy as np
 import torch
 
-nvinfer = ctypes.CDLL("/path-to-tensorrt/TensorRT-6.0.1.5/lib/libnvinfer_plugin.so", mode=ctypes.RTLD_GLOBAL)
+nvinfer = ctypes.CDLL("/usr/lib/x86_64-linux-gnu/libnvinfer_plugin.so.7", mode=ctypes.RTLD_GLOBAL)
 print('load nvinfer')
 pg = ctypes.CDLL("./libflatten_concat.so", mode=ctypes.RTLD_GLOBAL)
 print('load customed plugin')
